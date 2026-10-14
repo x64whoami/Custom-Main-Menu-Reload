@@ -26,6 +26,7 @@ import lumien.custommainmenu.lib.actions.ActionOpenLink;
 import lumien.custommainmenu.lib.actions.ActionOpenModConfig;
 import lumien.custommainmenu.lib.actions.ActionQuit;
 import lumien.custommainmenu.lib.actions.ActionRefresh;
+import lumien.custommainmenu.lib.actions.ActionOpenFolder;
 import lumien.custommainmenu.lib.actions.IAction;
 import lumien.custommainmenu.lib.texts.IText;
 import lumien.custommainmenu.lib.texts.TextResourceLocation;
@@ -340,7 +341,7 @@ public class GuiConfig
 
 	private Button getButton(JsonObject jsonObject)
 	{
-		Button b = new Button(this, getWantedText(jsonObject.get("text")), jsonObject.get("posX").getAsInt(), jsonObject.get("posY").getAsInt(), jsonObject.get("width").getAsInt(), jsonObject.get("height").getAsInt());
+		Button b = new Button(this, getWantedText(jsonObject.get("text")), jsonObject.get("posX").getAsInt(), jsonObject.get("posY").getAsInt(), jsonObject.get("width").getAsInt(), jsonObject.get("height").getAsInt(), getAlignment("button"));
 
 		if (jsonObject.has("alignment"))
 		{
@@ -419,6 +420,43 @@ public class GuiConfig
 			b.textOffsetY = jsonObject.get("textOffsetY").getAsInt();
 		}
 
+		// Hover offsets: fall back to text offsets for backwards compatibility
+		if (jsonObject.has("hoverTextOffsetX"))
+		{
+			b.hoverTextOffsetX = jsonObject.get("hoverTextOffsetX").getAsInt();
+		}
+		else
+		{
+			b.hoverTextOffsetX = b.textOffsetX;
+		}
+
+		if (jsonObject.has("hoverTextOffsetY"))
+		{
+			b.hoverTextOffsetY = jsonObject.get("hoverTextOffsetY").getAsInt();
+		}
+		else
+		{
+			b.hoverTextOffsetY = b.textOffsetY;
+		}
+
+		// Anchor: optional; default is MIDDLE
+		if (jsonObject.has("anchor"))
+		{
+			String stringAnchor = jsonObject.get("anchor").getAsString();
+			if (stringAnchor.equals("start"))
+			{
+				b.anchor = ANCHOR.START;
+			}
+			else if (stringAnchor.equals("middle"))
+			{
+				b.anchor = ANCHOR.MIDDLE;
+			}
+			else if (stringAnchor.equals("end"))
+			{
+				b.anchor = ANCHOR.END;
+			}
+		}
+
 		b.unit = parseUnit(jsonObject, "unit", b.unit, b.name);
 		b.posXUnit = parseUnit(jsonObject, "posXUnit", null, b.name);
 		b.posYUnit = parseUnit(jsonObject, "posYUnit", null, b.name);
@@ -446,6 +484,7 @@ public class GuiConfig
 	private Image getImage(JsonObject jsonObject)
 	{
 		Image image = new Image(this, jsonObject.get("posX").getAsInt(), jsonObject.get("posY").getAsInt(), jsonObject.get("width").getAsInt(), jsonObject.get("height").getAsInt(), getAlignment("top_left"));
+
 		if (jsonObject.has("alignment"))
 		{
 			image.alignment = getAlignment(jsonObject.get("alignment").getAsString());
