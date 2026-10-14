@@ -5,6 +5,7 @@ import lumien.custommainmenu.configuration.GuiConfig;
 import lumien.custommainmenu.lib.actions.IAction;
 import lumien.custommainmenu.lib.texts.IText;
 import lumien.custommainmenu.lib.textures.ITexture;
+import lumien.custommainmenu.lib.ANCHOR;
 
 public class Button extends Element
 {
@@ -33,8 +34,11 @@ public class Button extends Element
 	
 	public int textOffsetX;
 	public int textOffsetY;
+	public int hoverTextOffsetX;
+	public int hoverTextOffsetY;
 	
 	public int wrappedButtonID;
+	public ANCHOR anchor;
 
 	public String unit;
 	public String posXUnit;
@@ -63,6 +67,8 @@ public class Button extends Element
 
 		this.textOffsetX = 0;
 		this.textOffsetY = 0;
+		this.hoverTextOffsetX = this.textOffsetX;
+		this.hoverTextOffsetY = this.textOffsetY;
 
 		this.unit = "px";
 		this.posXUnit = null;
@@ -74,6 +80,9 @@ public class Button extends Element
 		{
 			this.alignment = parent.getAlignment("button");
 		}
+
+		// default anchor
+		this.anchor = ANCHOR.MIDDLE;
 	}
 
 	public Button(GuiConfig parent,IText text, int posX, int posY, int width, int height)
